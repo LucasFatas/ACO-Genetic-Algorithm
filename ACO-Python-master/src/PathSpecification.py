@@ -3,7 +3,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 import re
 import traceback
-from src.Coordinate import Coordinate
+from Coordinate import Coordinate
 
 # Specification of a path containing a start and end coordinate.
 class PathSpecification:

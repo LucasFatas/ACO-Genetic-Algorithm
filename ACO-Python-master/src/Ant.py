@@ -2,7 +2,8 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 import random
-from src.Route import Route
+from Route import Route
+from Direction import Direction
 
 #Class that represents the ants functionality.
 class Ant:
@@ -19,6 +20,27 @@ class Ant:
 
     # Method that performs a single run through the maze by the ant.
     # @return The route the ant found through the maze.
-    def find_route(self):
+    def find_route(self, path_length):
         route = Route(self.start)
+        visited_list = []
+        while self.current_position != self.end and route.size() < path_length:
+            sur_pheromones = self.maze.get_surrounding_pheromone(self.current_position)
+            current_pos = self.current_position
+            visited_list.append(self.current_position)
+            east_chance = sur_pheromones.get(Direction.east)
+            north_chance = sur_pheromones.get(Direction.north)
+            west_chance = sur_pheromones.get(Direction.west)
+            south_chance = sur_pheromones.get(Direction.south)
+            if current_pos.add_direction(Direction.east) in visited_list:
+                east_chance = east_chance/1000
+            if current_pos.add_direction(Direction.north) in visited_list:
+                north_chance = north_chance/1000
+            if current_pos.add_direction(Direction.west) in visited_list:
+                west_chance = west_chance/1000
+            if current_pos.add_direction(Direction.south) in visited_list:
+                south_chance = south_chance/1000
+            directions = [Direction.east, Direction.north, Direction.west, Direction.south]
+            direction = self.rand.choices(directions, weights=(east_chance, north_chance, west_chance, south_chance), k=1)[0]
+            self.current_position = self.current_position.add_direction(direction)
+            route.add(direction)
         return route
