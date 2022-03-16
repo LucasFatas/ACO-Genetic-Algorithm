@@ -1,4 +1,5 @@
 import os, sys
+import numpy as np
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 import random
@@ -23,6 +24,7 @@ class Ant:
     def find_route(self, path_length):
         route = Route(self.start)
         visited_list = []
+        deadEnd = [0,0,0,0]
         while self.current_position != self.end and route.size() < path_length:
             sur_pheromones = self.maze.get_surrounding_pheromone(self.current_position)
             current_pos = self.current_position
@@ -32,15 +34,18 @@ class Ant:
             west_chance = sur_pheromones.get(Direction.west)
             south_chance = sur_pheromones.get(Direction.south)
             if current_pos.add_direction(Direction.east) in visited_list:
-                east_chance = east_chance/1000
+                east_chance = 0
             if current_pos.add_direction(Direction.north) in visited_list:
-                north_chance = north_chance/1000
+                north_chance = 0
             if current_pos.add_direction(Direction.west) in visited_list:
-                west_chance = west_chance/1000
+                west_chance = 0
             if current_pos.add_direction(Direction.south) in visited_list:
-                south_chance = south_chance/1000
+                south_chance = 0
             directions = [Direction.east, Direction.north, Direction.west, Direction.south]
-            direction = self.rand.choices(directions, weights=(east_chance, north_chance, west_chance, south_chance), k=1)[0]
-            self.current_position = self.current_position.add_direction(direction)
-            route.add(direction)
+            if np.array_equal(directions, deadEnd):
+                route.remove_last()
+            else:
+                direction = self.rand.choices(directions, weights=(east_chance, north_chance, west_chance, south_chance), k=1)[0]
+                self.current_position = self.current_position.add_direction(direction)
+                route.add(direction)
         return route

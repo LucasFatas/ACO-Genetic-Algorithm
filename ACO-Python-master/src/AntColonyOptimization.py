@@ -45,7 +45,7 @@ class AntColonyOptimization:
 # Driver function for Assignment 1
 if __name__ == "__main__":
     #parameters
-    gen = 10
+    ants_per_gen = 10
     no_gen = 10
     q = 400
     evap = 0.1
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     #construct the optimization objects
     maze = Maze.create_maze("./../data/medium maze.txt")
     spec = PathSpecification.read_coordinates("./../data/medium coordinates.txt")
-    aco = AntColonyOptimization(maze, gen, no_gen, q, evap,path_length)
+    aco = AntColonyOptimization(maze, ants_per_gen, no_gen, q, evap, path_length)
 
     #save starting time
     start_time = int(round(time.time() * 1000))

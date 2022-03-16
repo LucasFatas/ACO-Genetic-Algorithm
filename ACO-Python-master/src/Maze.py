@@ -70,7 +70,7 @@ class Maze:
     def get_length(self):
         return self.length
 
-    # Returns a the amount of pheromones on the neighbouring positions (N/S/E/W).
+    # Returns the amount of pheromones on the neighbouring positions (N/S/E/W).
     # @param position The position to check the neighbours of.
     # @return the pheromones of the neighbouring positions.
     def get_surrounding_pheromone(self, position):
