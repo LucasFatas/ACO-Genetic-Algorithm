@@ -42,8 +42,16 @@ class Ant:
             if current_pos.add_direction(Direction.south) in visited_list:
                 south_chance = 0
             directions = [Direction.east, Direction.north, Direction.west, Direction.south]
-            if np.array_equal(directions, deadEnd):
-                route.remove_last()
+            if np.array_equal([east_chance, north_chance, west_chance, south_chance], deadEnd):
+                back_direction = route.remove_last()
+                if(back_direction == Direction.east):
+                    self.current_position = self.current_position.add_direction(Direction.west)
+                if (back_direction == Direction.west):
+                    self.current_position = self.current_position.add_direction(Direction.east)
+                if (back_direction == Direction.north):
+                    self.current_position = self.current_position.add_direction(Direction.south)
+                if (back_direction == Direction.south):
+                    self.current_position = self.current_position.add_direction(Direction.north)
             else:
                 direction = self.rand.choices(directions, weights=(east_chance, north_chance, west_chance, south_chance), k=1)[0]
                 self.current_position = self.current_position.add_direction(direction)
