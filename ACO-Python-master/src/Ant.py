@@ -25,7 +25,7 @@ class Ant:
         route = Route(self.start)
         visited_list = []
         deadEnd = [0,0,0,0]
-        while self.current_position != self.end:
+        while self.current_position != self.end and route.size() < path_length:
             sur_pheromones = self.maze.get_surrounding_pheromone(self.current_position)
             current_pos = self.current_position
             visited_list.append(self.current_position)
@@ -56,6 +56,4 @@ class Ant:
                 direction = self.rand.choices(directions, weights=(east_chance, north_chance, west_chance, south_chance), k=1)[0]
                 self.current_position = self.current_position.add_direction(direction)
                 route.add(direction)
-            if route.size() > path_length:
-                return Route(self.start)
         return route
