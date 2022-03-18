@@ -55,10 +55,7 @@ class Maze:
     # Evaporate pheromone
     # @param rho evaporation factor
     def evaporate(self, rho):
-        for x in range(self.width):
-            for y in range(self.length):
-                self.pheromone_array[y, x] = self.pheromone_array[y, x] * rho
-        return self.pheromone_array
+        return self.pheromone_array*rho
 
     # Width getter
     # @return width of the maze
@@ -79,16 +76,16 @@ class Maze:
         south = 0
         east = 0
         direction = position.add_direction(Direction.north)
-        if 0 <= direction.get_y() < self.length and 0 <= direction.get_x() < self.width:
+        if self.in_bounds(direction):
             north = self.pheromone_array[direction.get_x()][direction.get_y()]
         direction = position.add_direction(Direction.east)
-        if 0 <= direction.get_y() < self.length and 0 <= direction.get_x() < self.width:
+        if self.in_bounds(direction):
             east = self.pheromone_array[direction.get_x()][direction.get_y()]
         direction = position.add_direction(Direction.south)
-        if 0 <= direction.get_y() < self.length and 0 <= direction.get_x() < self.width:
+        if self.in_bounds(direction):
             south = self.pheromone_array[direction.get_x()][direction.get_y()]
         direction = position.add_direction(Direction.west)
-        if 0 <= direction.get_y() < self.length and 0 <= direction.get_x() < self.width:
+        if self.in_bounds(direction):
             west = self.pheromone_array[direction.get_x()][direction.get_y()]
         return sr.SurroundingPheromone(north, east, south, west)
 
