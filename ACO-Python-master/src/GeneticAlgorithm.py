@@ -38,7 +38,7 @@ class GeneticAlgorithm:
     # @return the optimized product sequence.
     def solve_tsp(self, tsp_data):
         self.tsp_data = tsp_data
-        self.chromosome_size = tsp_data[0]
+        self.chromosome_size = len(tsp_data.product_locations)
         self.create_population()
 
         for i in range(generations):
@@ -53,18 +53,19 @@ class GeneticAlgorithm:
     def create_population(self):
         self.chromosomes = []
         for i in range(self.pop_size):
-            chromosome = np.arrange(0, self.chromosome_size)
+            chromosome = np.arange(0, self.chromosome_size)
             self.chromosomes.append(self.shuffle(chromosome))
 
     # This method calculates the total distance of a route in a chromosome
     # @returns the total distance
     def calculate_distance(self, chromosome):
-        distance = self.tsp_data.start_to_product[chromosome[0]]
+
+        distance = self.tsp_data.start_distances[chromosome[0]]
 
         for i in range(self.chromosome_size - 1):
-            distance += self.tsp_data.product_to_product[chromosome[i], chromosome[i + 1]]
+            distance += self.tsp_data.distances[chromosome[i]][chromosome[i + 1]]
 
-        distance += self.tsp_data.product_to_end[chromosome[self.chromosome_size - 1]]
+        distance += self.tsp_data.end_distances[chromosome[self.chromosome_size - 1]]
 
         return distance
 
@@ -151,11 +152,13 @@ if __name__ == "__main__":
     # parameters
     population_size = 20
     generations = 20
+    crossover_probability = 0.9
+    mutation_probability = 0.1
     persistFile = "./../tmp/productMatrixDist"
 
     # setup optimization
     tsp_data = TSPData.read_from_file(persistFile)
-    ga = GeneticAlgorithm(generations, population_size)
+    ga = GeneticAlgorithm(generations, population_size, crossover_probability, mutation_probability)
 
     # run optimzation and write to file
     solution = ga.solve_tsp(tsp_data)
