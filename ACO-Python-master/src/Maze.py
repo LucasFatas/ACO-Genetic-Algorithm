@@ -77,16 +77,16 @@ class Maze:
         east = 0
         direction = position.add_direction(Direction.north)
         if self.in_bounds(direction):
-            north = self.pheromone_array.get_pheromone(direction)
+            north = self.pheromone_array[direction.get_x()][direction.get_y()]
         direction = position.add_direction(Direction.east)
         if self.in_bounds(direction):
-            east = self.pheromone_array.get_pheromone(direction)
+            east = self.pheromone_array[direction.get_x()][direction.get_y()]
         direction = position.add_direction(Direction.south)
         if self.in_bounds(direction):
-            south = self.pheromone_array.get_pheromone(direction)
+            south = self.pheromone_array[direction.get_x()][direction.get_y()]
         direction = position.add_direction(Direction.west)
         if self.in_bounds(direction):
-            west = self.pheromone_array.get_pheromone(direction)
+            west = self.pheromone_array[direction.get_x()][direction.get_y()]
         return sr.SurroundingPheromone(north, east, south, west)
 
     # Pheromone getter for a specific position. If the position is not in bounds returns 0
