@@ -40,13 +40,14 @@ class GeneticAlgorithm:
         self.tsp_data = tsp_data
         self.chromosome_size = len(tsp_data.product_locations)
         self.create_population()
+        optimal_path = None
 
         for i in range(generations):
+            fitness = self.population_fitness()
+            optimal_path = self.chromosomes[fitness.argmin()]
+            print(self.calculate_distance(optimal_path))
             self.new_population()
 
-        fitness = self.population_fitness()
-
-        optimal_path = self.chromosomes[fitness.index(fitness.max())]
         return optimal_path
 
     # This method creates the initial population
@@ -59,7 +60,7 @@ class GeneticAlgorithm:
     # This method calculates the total distance of a route in a chromosome
     # @returns the total distance
     def calculate_distance(self, chromosome):
-
+        print(tsp_data.distances)
         distance = self.tsp_data.start_distances[chromosome[0]]
 
         for i in range(self.chromosome_size - 1):
@@ -73,23 +74,32 @@ class GeneticAlgorithm:
     # Other fitness functions should be considered
     # @returns array with the fitness of each chromosome
     def population_fitness(self):
-        fitness = []
+        distance = []
 
         for c in self.chromosomes:
-            fitness.append(1 / self.calculate_distance(c))  # take inverse since trying to find the smallest distance
+            distance.append(self.calculate_distance(c))  # take inverse since trying to find the smallest distance
 
-        fitness_sum = fitness.sum()
+        distance_max = max(distance)
+        fitness = []
+        fitness_sum = 0
+        for d in distance:
+            f = (distance_max-d)+1
+            fitness.append(f)
+            fitness_sum += f
 
-        unit_vector = fitness / fitness_sum
+        probability_vector = []
+        for f in fitness:
+            probability_vector.append(f/fitness_sum)
 
-        return unit_vector
+        return np.array(probability_vector)
 
     # This method selects the chromosomes for reproduction
     def select_chromosomes(self, fitness):
         selected_chromosomes = []
 
-        for i in range(self.population_size):
-            chromosome_index = np.random.choice(self.chromosome_size, self.chromosome_size, fitness)
+        for i in range(self.pop_size):
+
+            chromosome_index = np.random.choice(np.arange(self.pop_size), p=fitness, replace=False)
             selected_chromosomes.append(self.chromosomes[chromosome_index])
 
         return selected_chromosomes
@@ -97,22 +107,15 @@ class GeneticAlgorithm:
     # This method implements Non-Wrapping Ordered Crossover (NWOX), chose based on the study below
     # https://arxiv.org/pdf/1203.3097.pdf
     def crossover_operation(self, parent1, parent2):
-        child1 = []
-        child2 = []
 
         crossover_points = np.random.randint(1, self.chromosome_size, size=2)
 
         a = crossover_points.min()
         b = crossover_points.max()
 
-        child1.append(parent1[0:a])
-        child2.append(parent2[0:a])
+        child1 = list(parent1[0:a]) + list(parent2[a:b + 1]) + list(parent1[b + 1:self.chromosome_size])
+        child2 = list(parent2[0:a]) + list(parent1[a:b + 1]) + list(parent2[b + 1:self.chromosome_size])
 
-        child1.append(parent2[a:b + 1])
-        child2.append(parent1[a:b + 1])
-
-        child1.append(parent1[b + 1:self.chromosome_size])
-        child2.append(parent2[b + 1:self.chromosome_size])
 
         return [child1, child2]
 
@@ -133,15 +136,15 @@ class GeneticAlgorithm:
         # ASK TA ABOUT ODD NUMBER OF PARENTS
         # crossover
         for i in range(self.pop_size-1):
-            if np.random.random < self.p_crossover:
+            if np.random.random() < self.p_crossover:
                 new_chromosomes = self.crossover_operation(selected_chromosomes[i], selected_chromosomes[i+1])
 
-                self.chromosomes[i] = new_chromosomes[0]
-                self.chromosomes[i+1] = new_chromosomes[1]
+                selected_chromosomes[i] = new_chromosomes[0]
+                selected_chromosomes[i+1] = new_chromosomes[1]
 
         # mutation
         for i in range(self.pop_size):
-            if np.random.random < self.p_mutation:
+            if np.random.random() < self.p_mutation:
                 self.mutation_operation(selected_chromosomes[i])
 
         self.chromosomes = selected_chromosomes
@@ -150,10 +153,10 @@ class GeneticAlgorithm:
 # Assignment 2.b
 if __name__ == "__main__":
     # parameters
-    population_size = 20
-    generations = 20
+    population_size = 100
+    generations = 100
     crossover_probability = 0.9
-    mutation_probability = 0.1
+    mutation_probability = 0.01
     persistFile = "./../tmp/productMatrixDist"
 
     # setup optimization
@@ -162,4 +165,5 @@ if __name__ == "__main__":
 
     # run optimzation and write to file
     solution = ga.solve_tsp(tsp_data)
+    print(solution)
     tsp_data.write_action_file(solution, "./../data/TSP solution.txt")
