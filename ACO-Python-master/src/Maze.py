@@ -5,6 +5,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 import traceback
 import SurroundingPheromone as sr
 from Direction import Direction
+import numpy as np
 
 
 # Class that holds all the maze data. This means the pheromones, the open and blocked tiles in the system as
@@ -26,7 +27,7 @@ class Maze:
 
     # Initialize pheromones to a start value.
     def initialize_pheromones(self):
-        self.pheromone_array = self.walls
+        self.pheromone_array = np.array(self.walls)
         return self.pheromone_array
 
     # Reset the maze for a new shortest path problem.
