@@ -55,10 +55,7 @@ class Maze:
     # Evaporate pheromone
     # @param rho evaporation factor
     def evaporate(self, rho):
-        for x in range(self.width):
-            for y in range(self.length):
-                self.pheromone_array[y, x] = self.pheromone_array[y, x] * rho
-        return self.pheromone_array
+        return self.pheromone_array*rho
 
     # Width getter
     # @return width of the maze

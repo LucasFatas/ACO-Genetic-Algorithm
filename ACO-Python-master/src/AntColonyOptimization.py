@@ -40,6 +40,7 @@ class AntColonyOptimization:
                 if current_shortest_route is None or current.shorter_than(current_shortest_route):
                     current_shortest_route = current
             maze.add_pheromone_routes(routes, self.q)
+            maze.evaporate(self,self.evaporation)
         return current_shortest_route
 
 # Driver function for Assignment 1
