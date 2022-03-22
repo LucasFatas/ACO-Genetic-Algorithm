@@ -39,7 +39,7 @@ class AntColonyOptimization:
                 routes.append(current)
                 if current_shortest_route is None or current.shorter_than(current_shortest_route):
                     current_shortest_route = current
-            self.maze.evaporate(evap)
+            self.maze.evaporate(self.evaporation)
             self.maze.add_pheromone_routes(routes, self.q)
         return current_shortest_route
 
