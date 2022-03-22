@@ -188,9 +188,9 @@ class TSPData:
 # Assignment 2.a
 if __name__ == "__main__":
     #parameters
-    gen = 1
-    no_gen = 1
-    q = 1000
+    gen = 1000
+    no_gen = 10
+    q = 400
     evap = 0.1
     persist_file = "./../tmp/productMatrixDist"
     tsp_path = "./../data/tsp products.txt"
@@ -199,7 +199,7 @@ if __name__ == "__main__":
     #construct optimization
     maze = Maze.create_maze("./../data/hard maze.txt")
     pd = TSPData.read_specification(coordinates, tsp_path)
-    aco = AntColonyOptimization(maze, gen, no_gen, q, evap)
+    aco = AntColonyOptimization(maze, gen, no_gen, q, evap, 4800)
         
     #run optimization and write to file
     pd.calculate_routes(aco)
